@@ -97,3 +97,6 @@ export SDKMAN_DIR="/Users/kddi/.sdkman"
 [[ -s "/Users/kddi/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/kddi/.sdkman/bin/sdkman-init.sh"
 
 export PATH=$PATH:~/bin
+export PATH=$HOME/.homebrew/bin:$PATH
+export HOMEBREW_CACHE=$HOME/.homebrew/caches
+eval "$(anyenv init -)"
