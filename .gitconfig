@@ -1,0 +1,10 @@
+[core]
+	editor = vim
+[alias]
+	ci = commit
+	st = status
+	br = branch
+	co = checkout
+	sw = switch
+[include]
+    path = ~/.gitconfig.local
