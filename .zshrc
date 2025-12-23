@@ -99,4 +99,4 @@ export SDKMAN_DIR="/Users/kddi/.sdkman"
 export PATH=$PATH:~/bin
 export PATH=$HOME/.homebrew/bin:$PATH
 export HOMEBREW_CACHE=$HOME/.homebrew/caches
-eval "$(anyenv init -)"
+eval "$(mise activate zsh)"
