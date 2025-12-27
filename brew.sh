@@ -7,4 +7,4 @@ if [ $? -gt 0 ]; then
 fi
 
 echo brew
-brew install anyenv
+brew install mise
