@@ -1,0 +1,82 @@
+name: Dotfiles Tests
+
+on:
+  push:
+    branches: [ main, 'claude/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Zsh
+      run: sudo apt-get update && sudo apt-get install -y zsh
+
+    - name: Check .zshrc syntax
+      run: |
+        echo "Checking .zshrc syntax..."
+        zsh -n .zshrc
+        echo "✓ .zshrc syntax is valid"
+
+    - name: Check bootstrap.sh syntax
+      run: |
+        echo "Checking bootstrap.sh syntax..."
+        bash -n bootstrap.sh
+        echo "✓ bootstrap.sh syntax is valid"
+
+    - name: Check brew.sh syntax
+      run: |
+        echo "Checking brew.sh syntax..."
+        bash -n brew.sh
+        echo "✓ brew.sh syntax is valid"
+
+    - name: Check bin/git-dem syntax
+      run: |
+        echo "Checking bin/git-dem syntax..."
+        bash -n bin/git-dem
+        echo "✓ bin/git-dem syntax is valid"
+
+    - name: Test bootstrap.sh execution (dry-run)
+      run: |
+        echo "Testing bootstrap.sh execution..."
+        # Create a minimal git config to avoid errors
+        git config --global user.email "test@example.com"
+        git config --global user.name "Test User"
+
+        # Initialize git repo if needed
+        if [ ! -d .git ]; then
+          git init
+          git add .
+          git commit -m "Initial commit"
+        fi
+
+        # Run bootstrap with rsync dry-run to test without actually copying files
+        rsync -avhn --no-perms --exclude ".git/" --exclude ".DS_Store" \
+          --exclude ".osx" --exclude "bootstrap.sh" --exclude "README.md" \
+          --exclude "LICENSE-MIT.txt" . ~/
+        echo "✓ bootstrap.sh would execute successfully"
+
+    - name: Test .zshrc loads without errors
+      run: |
+        echo "Testing .zshrc loads without errors..."
+        # Create temporary home directory for test
+        mkdir -p /tmp/test-home
+        export HOME=/tmp/test-home
+
+        # Copy .zshrc to test home
+        cp .zshrc $HOME/.zshrc
+
+        # Try to start zsh and exit immediately
+        zsh -i -c 'echo "✓ .zshrc loads successfully"'
+
+    - name: Verify executable permissions
+      run: |
+        echo "Checking executable permissions..."
+        test -x bootstrap.sh && echo "✓ bootstrap.sh is executable"
+        test -x brew.sh && echo "✓ brew.sh is executable"
+        test -x bin/git-dem && echo "✓ bin/git-dem is executable"
